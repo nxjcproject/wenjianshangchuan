@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUserControls.Web", "WebUserContorls.Web\WebUserControls.Web.csproj", "{CBA6FF5F-237D-4AB6-920D-1AC756800732}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUserControls.Service", "WebUserControls.Service\WebUserControls.Service.csproj", "{173A26B1-8F45-4470-A054-1AAFE3BD1470}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUserControls.Infrastructure", "WebUserControls.Infrastructure\WebUserControls.Infrastructure.csproj", "{876E17D4-3AED-4CEA-8FC5-D6046B6EB906}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBA6FF5F-237D-4AB6-920D-1AC756800732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBA6FF5F-237D-4AB6-920D-1AC756800732}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBA6FF5F-237D-4AB6-920D-1AC756800732}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBA6FF5F-237D-4AB6-920D-1AC756800732}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173A26B1-8F45-4470-A054-1AAFE3BD1470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173A26B1-8F45-4470-A054-1AAFE3BD1470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173A26B1-8F45-4470-A054-1AAFE3BD1470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173A26B1-8F45-4470-A054-1AAFE3BD1470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{876E17D4-3AED-4CEA-8FC5-D6046B6EB906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{876E17D4-3AED-4CEA-8FC5-D6046B6EB906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{876E17D4-3AED-4CEA-8FC5-D6046B6EB906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{876E17D4-3AED-4CEA-8FC5-D6046B6EB906}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

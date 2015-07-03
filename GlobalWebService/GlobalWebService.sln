@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalWebService.Infrastructure", "GlobalWebService.Infrastructure\GlobalWebService.Infrastructure.csproj", "{E335A86D-E90A-4375-BF2A-5984FE23CAAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalWebService.Service", "GlobalWebService.Service\GlobalWebService.Service.csproj", "{7D8EA972-E68F-41FB-BC75-049EAE1B4E5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalWebService.Web", "GlobalWebService.Web\GlobalWebService.Web.csproj", "{3013524F-B11A-49A9-822E-88946B5F7BE6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E335A86D-E90A-4375-BF2A-5984FE23CAAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E335A86D-E90A-4375-BF2A-5984FE23CAAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E335A86D-E90A-4375-BF2A-5984FE23CAAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E335A86D-E90A-4375-BF2A-5984FE23CAAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D8EA972-E68F-41FB-BC75-049EAE1B4E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D8EA972-E68F-41FB-BC75-049EAE1B4E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D8EA972-E68F-41FB-BC75-049EAE1B4E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D8EA972-E68F-41FB-BC75-049EAE1B4E5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3013524F-B11A-49A9-822E-88946B5F7BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3013524F-B11A-49A9-822E-88946B5F7BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3013524F-B11A-49A9-822E-88946B5F7BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3013524F-B11A-49A9-822E-88946B5F7BE6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
