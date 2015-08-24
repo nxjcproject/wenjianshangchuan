@@ -1,12 +1,40 @@
 ﻿var AddEnergyProcessRecordFlag;               //标记当前操作是添加还是删除.1表示添加;2表示修改
 var RecordItemId;
+var AuthArray = [];
 $(document).ready(function () {
     InitializingDefaultData()
     InitializingDialog();
     LoadEnergyProcessRecordData('first');
     //SetYearValue();
     //LoadEnergyConsumptionData('first');
+    initPageAuthority();
 });
+//初始化页面的增删改查权限
+function initPageAuthority() {
+    $.ajax({
+        type: "POST",
+        url: "EnergyProcessRecord.aspx/AuthorityControl",
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,//同步执行
+        success: function (msg) {
+            AuthArray = msg.d;
+            //增加
+            if (AuthArray[1] == '0') {
+                $("#id_add").linkbutton('disable');
+            }
+            ////修改
+            //if (authArray[2] == '0') {
+            //    $("#edit").linkbutton('disable');
+            //}
+            ////删除
+            //if (authArray[3] == '0') {
+            //    $("#delete").linkbutton('disable');
+            //}
+        }
+    });
+}
 /////////////////////////////初始化默认数据//////////////////////////
 function InitializingDefaultData() {
     var m_Date = new Date();
@@ -142,6 +170,10 @@ function QueryEnergyProcessRecordFun() {
     LoadEnergyProcessRecordData('last');
 }
 function VieweEnergyProcessRecordTextFun(myRecordItemId, myTitle, myDepartmentName, myRecorder, myRecordTime) {
+    if (AuthArray[0] == "0") {
+        $.messager.alert("提示", "该用户没有查看权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "EnergyProcessRecord.aspx/GetEnergyProcessRecordTextById",
@@ -194,7 +226,10 @@ function GetServerGuid() {
     });
 }
 function ModifyEnergyProcessRecordFun(myRecordItemId) {
-
+    if (AuthArray[2] == "0") {
+        $.messager.alert("提示", "该用户没有修改权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "EnergyProcessRecord.aspx/GetEnergyProcessRecordInfoById",
@@ -239,6 +274,10 @@ function ModifyEnergyProcessRecordFun(myRecordItemId) {
 }
 ///////////////////////////////删除操作/////////////////////////
 function DeleteEnergyProcessRecordFun(myRecordItemId) {
+    if (AuthArray[3] == "0") {
+        $.messager.alert("提示", "该用户没有删除权限！");
+        return;
+    }
     parent.$.messager.confirm('询问', '您确定要删除该运行过程记录?', function (r) {
         if (r) {
             $.ajax({

@@ -2,12 +2,40 @@
 var CaseAnalysisId;
 var CaseAnalysisNatureGood = "good";
 var CaseAnalysisNatureBad = "bad";
+var AuthArray = [];
 $(document).ready(function () {
     InitializingDefaultData()
     InitializingDialog();
     LoadCaseAnalysisTypeData('first');
     LoadCaseAnalysisData('first');
+    initPageAuthority();
 });
+//初始化页面的增删改查权限
+function initPageAuthority() {
+    $.ajax({
+        type: "POST",
+        url: "PostOperationGuide.aspx/AuthorityControl",
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,//同步执行
+        success: function (msg) {
+            AuthArray = msg.d;
+            //增加
+            if (AuthArray[1] == '0') {
+                $("#id_add").linkbutton('disable');
+            }
+            ////修改
+            //if (authArray[2] == '0') {
+            //    $("#edit").linkbutton('disable');
+            //}
+            ////删除
+            //if (authArray[3] == '0') {
+            //    $("#delete").linkbutton('disable');
+            //}
+        }
+    });
+}
 /////////////////////////////初始化默认数据//////////////////////////
 function InitializingDefaultData() {
     var m_Date = new Date();
@@ -186,6 +214,10 @@ function QueryCaseAnalysisFun() {
     LoadCaseAnalysisData('last');
 }
 function VieweCaseAnalysisTextFun(myCaseAnalysisId, myTitle, myCaseAnalysisParticipants, myCaseAnalysisTime) {
+    if (AuthArray[0] == "0") {
+        $.messager.alert("提示", "该用户没有查看权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "CaseAnalysis.aspx/GetCaseAnalysisTextById",
@@ -219,7 +251,10 @@ function AddCaseAnalysisFun() {
     $('#dlg_AddCaseAnalysis').dialog('open');
 }
 function ModifyCaseAnalysisFun(myCaseAnalysisId) {
-
+    if (AuthArray[2] == "0") {
+        $.messager.alert("提示", "该用户没有修改权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "CaseAnalysis.aspx/GetCaseAnalysisInfoById",
@@ -270,6 +305,10 @@ function ModifyCaseAnalysisFun(myCaseAnalysisId) {
 }
 ///////////////////////////////删除操作/////////////////////////
 function DeleteCaseAnalysisFun(myCaseAnalysisId) {
+    if (AuthArray[3] == "0") {
+        $.messager.alert("提示", "该用户没有删除权限！");
+        return;
+    }
     parent.$.messager.confirm('询问', '您确定要删除该案例分析?', function (r) {
         if (r) {
             $.ajax({

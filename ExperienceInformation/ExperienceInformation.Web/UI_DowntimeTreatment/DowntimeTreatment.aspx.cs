@@ -16,11 +16,25 @@ namespace ExperienceInformation.Web.UI_DowntimeTreatment
         private const string RecordTypeGroup = "DowntimeTreatment";
         protected void Page_Load(object sender, EventArgs e)
         {
+
             base.InitComponts();
             if (!IsPostBack)
             {
-
+#if DEBUG
+                List<string> m_DataValidIdItems = new List<string>() { "zc_nxjc_qtx_efc", "zc_nxjc_byc_byf" };
+                AddDataValidIdGroup("ProductionOrganization", m_DataValidIdItems);
+                mPageOpPermission = "0000";
+#endif
             }
+        }
+        /// <summary>
+        /// 增删改查权限控制
+        /// </summary>
+        /// <returns></returns>
+        [WebMethod]
+        public static char[] AuthorityControl()
+        {
+            return mPageOpPermission.ToArray();
         }
         [WebMethod]
         public static string GetDowntimeReasonInfo()
@@ -65,43 +79,64 @@ namespace ExperienceInformation.Web.UI_DowntimeTreatment
 
         public static string AddDowntimeTreatment(string myDowntimeTreatmentName, string myReasonItemId, string myPhenomenon, string myTreatment, string myRemarks)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[1] == '1')
             {
-                int m_DowntimeTreatmentText = ExperienceInformation.Service.DowntimeTreatment.DowntimeTreatment.AddDowntimeTreatment(myDowntimeTreatmentName, myReasonItemId, myPhenomenon, myTreatment, mUserId, myRemarks);
-                int m_Result = m_DowntimeTreatmentText > 0 ? 1 : m_DowntimeTreatmentText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_DowntimeTreatmentText = ExperienceInformation.Service.DowntimeTreatment.DowntimeTreatment.AddDowntimeTreatment(myDowntimeTreatmentName, myReasonItemId, myPhenomenon, myTreatment, mUserId, myRemarks);
+                    int m_Result = m_DowntimeTreatmentText > 0 ? 1 : m_DowntimeTreatmentText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有添加权限！";
             }
         }
         [WebMethod]
         public static string ModifyDowntimeTreatment(string myDowntimeTreatmentItemId, string myDowntimeTreatmentName, string myReasonItemId, string myPhenomenon, string myTreatment, string myRemarks)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[2] == '1')
             {
-                int m_DowntimeTreatmentText = ExperienceInformation.Service.DowntimeTreatment.DowntimeTreatment.ModifyDowntimeTreatmentById(myDowntimeTreatmentItemId, myDowntimeTreatmentName, myReasonItemId, myPhenomenon, myTreatment, mUserId, myRemarks);
-                int m_Result = m_DowntimeTreatmentText > 0 ? 1 : m_DowntimeTreatmentText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_DowntimeTreatmentText = ExperienceInformation.Service.DowntimeTreatment.DowntimeTreatment.ModifyDowntimeTreatmentById(myDowntimeTreatmentItemId, myDowntimeTreatmentName, myReasonItemId, myPhenomenon, myTreatment, mUserId, myRemarks);
+                    int m_Result = m_DowntimeTreatmentText > 0 ? 1 : m_DowntimeTreatmentText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有修改权限！";
             }
         }
         [WebMethod]
         public static string DeleteDowntimeTreatmentById(string myDowntimeTreatmentItemId)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[3] == '1')
             {
-                int m_DowntimeTreatmentText = ExperienceInformation.Service.DowntimeTreatment.DowntimeTreatment.DeleteDowntimeTreatmentById(myDowntimeTreatmentItemId);
-                int m_Result = m_DowntimeTreatmentText > 0 ? 1 : m_DowntimeTreatmentText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_DowntimeTreatmentText = ExperienceInformation.Service.DowntimeTreatment.DowntimeTreatment.DeleteDowntimeTreatmentById(myDowntimeTreatmentItemId);
+                    int m_Result = m_DowntimeTreatmentText > 0 ? 1 : m_DowntimeTreatmentText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有删除权限！";
             }
         }
     }

@@ -1,13 +1,41 @@
 ﻿var AddPostOperationGuideFlag;               //标记当前操作是添加还是删除.1表示添加;2表示修改
 var PostOperationKnowledgeId;
 var SelectedOrganizationId = "";
+var AuthArray = [];
 $(document).ready(function () {
     InitializingDefaultData()
     InitializingDialog();
     LoadPostOperationGuideData('first');
+    initPageAuthority();
     //SetYearValue();
     //LoadEnergyConsumptionData('first');
 });
+//初始化页面的增删改查权限
+function initPageAuthority() {
+    $.ajax({
+        type: "POST",
+        url: "PostOperationGuide.aspx/AuthorityControl",
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,//同步执行
+        success: function (msg) {
+            AuthArray = msg.d;
+            //增加
+            if (AuthArray[1] == '0') {
+                $("#id_add").linkbutton('disable');
+            }
+            ////修改
+            //if (authArray[2] == '0') {
+            //    $("#edit").linkbutton('disable');
+            //}
+            ////删除
+            //if (authArray[3] == '0') {
+            //    $("#delete").linkbutton('disable');
+            //}
+        }
+    });
+}
 /////////////////////////////初始化默认数据//////////////////////////
 function InitializingDefaultData() {
     var m_Date = new Date();
@@ -134,6 +162,10 @@ function QueryPostOperationGuideFun() {
     LoadPostOperationGuideData('last');
 }
 function ViewePostOperationGuideTextFun(myPostOperationKnowledgeId, myTitle, myPropounder, myProposedTime) {
+    if (AuthArray[0] == '0') {
+        $.messager.alert("提示", "该用户没有查看权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "PostOperationGuide.aspx/GetPostOperationGuideTextById",
@@ -166,7 +198,10 @@ function AddPostOperationGuideFun() {
     $('#dlg_AddPostOperationGuide').dialog('open');
 }
 function ModifyPostOperationGuideFun(myPostOperationKnowledgeId) {
-
+    if (AuthArray[2] == '0') {
+        $.messager.alert("提示", "该用户没有编辑权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "PostOperationGuide.aspx/GetPostOperationGuideInfoById",
@@ -213,6 +248,10 @@ function ModifyPostOperationGuideFun(myPostOperationKnowledgeId) {
 }
 ///////////////////////////////删除操作/////////////////////////
 function DeletePostOperationGuideFun(myPostOperationKnowledgeId) {
+    if (AuthArray[3] == '0') {
+        $.messager.alert("提示", "该用户没有删除权限！");
+        return;
+    }
     parent.$.messager.confirm('询问', '您确定要删除该操作指导?', function (r) {
         if (r) {
             $.ajax({

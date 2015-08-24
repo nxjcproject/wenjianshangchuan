@@ -60,7 +60,7 @@
                     <td>
                         <table>
                             <tr>
-                                <td><a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="AddCaseAnalysisFun();">添加</a>
+                                <td><a id="id_add" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="AddCaseAnalysisFun();">添加</a>
                                 </td>
                                 <td>
                                     <div class="datagrid-btn-separator"></div>

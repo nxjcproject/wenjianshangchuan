@@ -21,10 +21,20 @@ namespace ExperienceInformation.Web.UI_OperationGuide
 #if DEBUG
                 List<string> m_DataValidIdItems = new List<string>() { "zc_nxjc_qtx_efc", "zc_nxjc_byc_byf" };
                 AddDataValidIdGroup("ProductionOrganization", m_DataValidIdItems);
+                mPageOpPermission = "0000";
 #endif
                 HiddenField_UserId.Value = mUserId;
                 HiddenField_FolderPath.Value = "\\UploadFile\\PostOperationGuide";
             }
+        }
+        /// <summary>
+        /// 增删改查权限控制
+        /// </summary>
+        /// <returns></returns>
+        [WebMethod]
+        public static char[] AuthorityControl()
+        {
+            return mPageOpPermission.ToArray();
         }
         [WebMethod]
         public static string GetPostOperationGuideInfo(string myCreateYear, string myKeyword)
@@ -51,63 +61,84 @@ namespace ExperienceInformation.Web.UI_OperationGuide
         [WebMethod]
         public static string AddOperationGuide(string myPostOperationKnowledgeId, string myPostOperationKnowledgeName, string myKeyword, string myPostName, string myPostOperationKnowledgeText, string myPropounder, string myProposedTime, string myRemarks)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[1] == '1')
             {
-                int m_PostOperationGuideText = ExperienceInformation.Service.OperationGuide.PostOperationGuide.AddOperationGuide(myPostOperationKnowledgeId, myPostOperationKnowledgeName, myKeyword, myPostName, "PostOperation", "OperationGuide",
-                       myPostOperationKnowledgeText, myPropounder, myProposedTime, mUserId, myRemarks);
-                int m_Result = m_PostOperationGuideText > 0 ? 1 : m_PostOperationGuideText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_PostOperationGuideText = ExperienceInformation.Service.OperationGuide.PostOperationGuide.AddOperationGuide(myPostOperationKnowledgeId, myPostOperationKnowledgeName, myKeyword, myPostName, "PostOperation", "OperationGuide",
+                           myPostOperationKnowledgeText, myPropounder, myProposedTime, mUserId, myRemarks);
+                    int m_Result = m_PostOperationGuideText > 0 ? 1 : m_PostOperationGuideText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有增加权限！";
             }
         }
         [WebMethod]
         public static string ModifyOperationGuide(string myPostOperationKnowledgeId, string myPostOperationKnowledgeName, string myKeyword, string myOrganizationId, string myPostName, string myPostOperationKnowledgeText, string myPropounder, string myProposedTime, string myRemarks)
         {
-            string m_OrganizationId = ExperienceInformation.Service.OperationGuide.PostOperationGuide.GetStationId();
-            if (mUserId != "" && myOrganizationId == m_OrganizationId)
+            if (mPageOpPermission.ToArray()[2] == '1')
             {
+                string m_OrganizationId = ExperienceInformation.Service.OperationGuide.PostOperationGuide.GetStationId();
+                if (mUserId != "" && myOrganizationId == m_OrganizationId)
+                {
 
-                int m_PostOperationGuideText = ExperienceInformation.Service.OperationGuide.PostOperationGuide.ModifyOperationGuideById(myPostOperationKnowledgeId, myPostOperationKnowledgeName, myKeyword, m_OrganizationId, myPostName, "PostOperation", "OperationGuide",
-                       myPostOperationKnowledgeText, myPropounder, myProposedTime, mUserId, myRemarks);
-                int m_Result = m_PostOperationGuideText > 0 ? 1 : m_PostOperationGuideText;
-                return m_Result.ToString();
+                    int m_PostOperationGuideText = ExperienceInformation.Service.OperationGuide.PostOperationGuide.ModifyOperationGuideById(myPostOperationKnowledgeId, myPostOperationKnowledgeName, myKeyword, m_OrganizationId, myPostName, "PostOperation", "OperationGuide",
+                           myPostOperationKnowledgeText, myPropounder, myProposedTime, mUserId, myRemarks);
+                    int m_Result = m_PostOperationGuideText > 0 ? 1 : m_PostOperationGuideText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有修改权限！";
             }
         }
         [WebMethod]
         public static string DeleteOperationGuideById(string myPostOperationKnowledgeId)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[3] == '1')
             {
-                ///////////////////////////删除所有已上传的控件/////////////////////////
-                string m_FileClassify = "PostOperationGuide";
-                DataTable m_FilePathInfoTable = FileUploader.GetFileInfo("", myPostOperationKnowledgeId, m_FileClassify);
-                bool DeleteFileSuccess = true;
-                if (m_FilePathInfoTable != null)
+                if (mUserId != "")
                 {
-                    for (int i = 0; i < m_FilePathInfoTable.Rows.Count; i++)                   //删除所有文件
+                    ///////////////////////////删除所有已上传的控件/////////////////////////
+                    string m_FileClassify = "PostOperationGuide";
+                    DataTable m_FilePathInfoTable = FileUploader.GetFileInfo("", myPostOperationKnowledgeId, m_FileClassify);
+                    bool DeleteFileSuccess = true;
+                    if (m_FilePathInfoTable != null)
                     {
-                        string m_FileItemId = m_FilePathInfoTable.Rows[i]["FileItemId"].ToString();
-                        string m_FilePath = m_FilePathInfoTable.Rows[i]["FilePath"].ToString();
-                        int m_DeleteFileSuccess = FileUploader.DeleteFileInfo(m_FileItemId, m_FileClassify, m_FilePath);
-                        if (m_DeleteFileSuccess != 1)
+                        for (int i = 0; i < m_FilePathInfoTable.Rows.Count; i++)                   //删除所有文件
                         {
-                            DeleteFileSuccess = false;
+                            string m_FileItemId = m_FilePathInfoTable.Rows[i]["FileItemId"].ToString();
+                            string m_FilePath = m_FilePathInfoTable.Rows[i]["FilePath"].ToString();
+                            int m_DeleteFileSuccess = FileUploader.DeleteFileInfo(m_FileItemId, m_FileClassify, m_FilePath);
+                            if (m_DeleteFileSuccess != 1)
+                            {
+                                DeleteFileSuccess = false;
+                            }
                         }
-                    }
-                    if (DeleteFileSuccess == true)
-                    {
+                        if (DeleteFileSuccess == true)
+                        {
 
-                        ///////////////////////////删除记录本身/////////////////////////////////
-                        int m_PostOperationGuideText = ExperienceInformation.Service.OperationGuide.PostOperationGuide.DeleteOperationGuideById(myPostOperationKnowledgeId);
-                        int m_Result = m_PostOperationGuideText > 0 ? 1 : m_PostOperationGuideText;
-                        return m_Result.ToString();
+                            ///////////////////////////删除记录本身/////////////////////////////////
+                            int m_PostOperationGuideText = ExperienceInformation.Service.OperationGuide.PostOperationGuide.DeleteOperationGuideById(myPostOperationKnowledgeId);
+                            int m_Result = m_PostOperationGuideText > 0 ? 1 : m_PostOperationGuideText;
+                            return m_Result.ToString();
+                        }
+                        else
+                        {
+                            return "文件删除失败!";
+                        }
                     }
                     else
                     {
@@ -116,15 +147,14 @@ namespace ExperienceInformation.Web.UI_OperationGuide
                 }
                 else
                 {
-                    return "文件删除失败!";
+                    return "非法的用户操作!";
                 }
             }
             else
             {
-                return "非法的用户操作!";
-            }
 
-            
+                return "该用户没有删除权限！";
+            }
         }
         [WebMethod]
         public static string GetServerGuid()

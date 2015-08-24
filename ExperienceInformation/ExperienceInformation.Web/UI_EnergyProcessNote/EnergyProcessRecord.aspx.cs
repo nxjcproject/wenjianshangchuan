@@ -25,10 +25,20 @@ namespace ExperienceInformation.Web.UI_EnergyProcessNote
 #if DEBUG
                 List<string> m_DataValidIdItems = new List<string>() { "zc_nxjc_qtx_efc", "zc_nxjc_byc_byf" };
                 AddDataValidIdGroup("ProductionOrganization", m_DataValidIdItems);
+                mPageOpPermission = "0000";
 #endif
                 HiddenField_UserId.Value = mUserId;
                 HiddenField_FolderPath.Value = "\\UploadFile\\EnergyProcessRecord";
             }
+        }
+        /// <summary>
+        /// 增删改查权限控制
+        /// </summary>
+        /// <returns></returns>
+        [WebMethod]
+        public static char[] AuthorityControl()
+        {
+            return mPageOpPermission.ToArray();
         }
         [WebMethod]
         public static string GetEnergyProcessRecordInfo(string myStartTime, string myEndTime, string myRecordName, string myDepartmentName, string myRecordType)
@@ -54,78 +64,99 @@ namespace ExperienceInformation.Web.UI_EnergyProcessNote
         [WebMethod]
         public static string AddEnergyProcessRecord(string myRecordItemId, string myRecordName, string myDepartmentName, string myRecordTime, string myRecordText, string myRemarks)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[1] == '1')
             {
-                int m_EnergyProcessRecordText = ExperienceInformation.Service.EnergyProcessNote.EnergyProcessRecord.AddEnergyProcessRecord(myRecordItemId, myRecordName, myDepartmentName, "", "", RecordTypeGroup, mUserId,
-                       myRecordTime, myRecordText, mUserId, myRemarks);
-                int m_Result = m_EnergyProcessRecordText > 0 ? 1 : m_EnergyProcessRecordText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_EnergyProcessRecordText = ExperienceInformation.Service.EnergyProcessNote.EnergyProcessRecord.AddEnergyProcessRecord(myRecordItemId, myRecordName, myDepartmentName, "", "", RecordTypeGroup, mUserId,
+                           myRecordTime, myRecordText, mUserId, myRemarks);
+                    int m_Result = m_EnergyProcessRecordText > 0 ? 1 : m_EnergyProcessRecordText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有添加权限！";
             }
         }
         [WebMethod]
         public static string ModifyEnergyProcessRecord(string myRecordItemId, string myRecordName, string myDepartmentName, string myRecordTime, string myRecordText, string myRemarks)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[2] == '1')
             {
-                int m_EnergyProcessRecordText = ExperienceInformation.Service.EnergyProcessNote.EnergyProcessRecord.ModifyEnergyProcessRecordById(myRecordItemId, myRecordName, myDepartmentName, "", "", RecordTypeGroup, mUserId,
-                       myRecordTime, myRecordText, mUserId, myRemarks);
-                int m_Result = m_EnergyProcessRecordText > 0 ? 1 : m_EnergyProcessRecordText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_EnergyProcessRecordText = ExperienceInformation.Service.EnergyProcessNote.EnergyProcessRecord.ModifyEnergyProcessRecordById(myRecordItemId, myRecordName, myDepartmentName, "", "", RecordTypeGroup, mUserId,
+                           myRecordTime, myRecordText, mUserId, myRemarks);
+                    int m_Result = m_EnergyProcessRecordText > 0 ? 1 : m_EnergyProcessRecordText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有编辑权限！";
             }
         }
         [WebMethod]
         public static string DeleteEnergyProcessRecordById(string myRecordItemId, string myFileClassify)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[3] == '1')
             {
-                ///////////////////////////删除所有已上传的控件/////////////////////////
-                
-                DataTable m_FilePathInfoTable = FileUploader.GetFileInfo("",myRecordItemId, myFileClassify);
-                bool DeleteFileSuccess = true;
-                if (m_FilePathInfoTable != null)
+                if (mUserId != "")
                 {
-                    for (int i = 0; i < m_FilePathInfoTable.Rows.Count; i++)                   //删除所有文件
+                    ///////////////////////////删除所有已上传的控件/////////////////////////
+
+                    DataTable m_FilePathInfoTable = FileUploader.GetFileInfo("", myRecordItemId, myFileClassify);
+                    bool DeleteFileSuccess = true;
+                    if (m_FilePathInfoTable != null)
                     {
-                        string m_FileItemId = m_FilePathInfoTable.Rows[i]["FileItemId"].ToString();
-                        string m_FilePath = m_FilePathInfoTable.Rows[i]["FilePath"].ToString();
-                        int m_DeleteFileSuccess = FileUploader.DeleteFileInfo(m_FileItemId, myFileClassify, m_FilePath);
-                        if (m_DeleteFileSuccess != 1)
+                        for (int i = 0; i < m_FilePathInfoTable.Rows.Count; i++)                   //删除所有文件
                         {
-                            DeleteFileSuccess = false;
+                            string m_FileItemId = m_FilePathInfoTable.Rows[i]["FileItemId"].ToString();
+                            string m_FilePath = m_FilePathInfoTable.Rows[i]["FilePath"].ToString();
+                            int m_DeleteFileSuccess = FileUploader.DeleteFileInfo(m_FileItemId, myFileClassify, m_FilePath);
+                            if (m_DeleteFileSuccess != 1)
+                            {
+                                DeleteFileSuccess = false;
+                            }
                         }
-                    }
-                    if (DeleteFileSuccess == true)
-                    {
+                        if (DeleteFileSuccess == true)
+                        {
 
-                        ///////////////////////////删除记录本身/////////////////////////////////
+                            ///////////////////////////删除记录本身/////////////////////////////////
 
-                        int m_EnergyProcessRecordText = ExperienceInformation.Service.EnergyProcessNote.EnergyProcessRecord.DeleteEnergyProcessRecordById(myRecordItemId);
-                        int m_Result = m_EnergyProcessRecordText > 0 ? 1 : m_EnergyProcessRecordText;
-                        return m_Result.ToString();
+                            int m_EnergyProcessRecordText = ExperienceInformation.Service.EnergyProcessNote.EnergyProcessRecord.DeleteEnergyProcessRecordById(myRecordItemId);
+                            int m_Result = m_EnergyProcessRecordText > 0 ? 1 : m_EnergyProcessRecordText;
+                            return m_Result.ToString();
+                        }
+                        else
+                        {
+                            return "文件删除失败!";
+                        }
                     }
                     else
                     {
                         return "文件删除失败!";
                     }
+
+
                 }
                 else
                 {
-                    return "文件删除失败!";
+                    return "非法的用户操作!";
                 }
-                
-               
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有删除权限！";
             }
         }
         [WebMethod]

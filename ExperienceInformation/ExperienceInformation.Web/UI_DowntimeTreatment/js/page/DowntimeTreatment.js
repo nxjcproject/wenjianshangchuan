@@ -2,11 +2,39 @@
 var DowntimeTreatmentItemId;
 var DowntimeReasonIdF;
 var DowntimeReasonId;
+var AuthArray = [];
 $(document).ready(function () {
     InitializingDefaultData()
     InitializingDialog();
     InitializeDowntimeTreatmentGrid("DowntimeTreatment", { 'rows': [], 'total': 0 });
+    initPageAuthority();
 });
+//初始化页面的增删改查权限
+function initPageAuthority() {
+    $.ajax({
+        type: "POST",
+        url: "DowntimeTreatment.aspx/AuthorityControl",
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,//同步执行
+        success: function (msg) {
+            AuthArray = msg.d;
+            //增加
+            if (AuthArray[1] == '0') {
+                $("#id_add").linkbutton('disable');
+            }
+            ////修改
+            //if (authArray[2] == '0') {
+            //    $("#edit").linkbutton('disable');
+            //}
+            ////删除
+            //if (authArray[3] == '0') {
+            //    $("#delete").linkbutton('disable');
+            //}
+        }
+    });
+}
 /////////////////////////////初始化默认数据//////////////////////////
 function InitializingDefaultData() {
     $.ajax({
@@ -158,6 +186,10 @@ function QueryDowntimeTreatmentFun() {
     LoadDowntimeTreatmentData('last');
 }
 function VieweDowntimeTreatmentTextFun(myDowntimeTreatmentItemId, myTitle, myCreator, myCreateTime) {
+    if (AuthArray[0] == "0") {
+        $.messager.alert("提示", "该用户没有查看权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "DowntimeTreatment.aspx/GetDowntimePhenomenonTreatmentTextById",
@@ -186,7 +218,10 @@ function AddDowntimeTreatmentFun() {
     $('#dlg_AddDowntimeTreatment').dialog('open');
 }
 function ModifyDowntimeTreatmentFun(myDowntimeTreatmentItemId) {
-
+    if (AuthArray[2] == "0") {
+        $.messager.alert("提示", "该用户没有修改权限！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "DowntimeTreatment.aspx/GetDowntimeTreatmentInfoById",
@@ -240,6 +275,10 @@ function ModifyDowntimeTreatmentFun(myDowntimeTreatmentItemId) {
 }
 ///////////////////////////////删除操作/////////////////////////
 function DeleteDowntimeTreatmentFun(myDowntimeTreatmentItemId) {
+    if (AuthArray[3] == "0") {
+        $.messager.alert("提示", "该用户没有删除权限！");
+        return;
+    }
     parent.$.messager.confirm('询问', '您确定要删除该停机处理记录?', function (r) {
         if (r) {
             $.ajax({

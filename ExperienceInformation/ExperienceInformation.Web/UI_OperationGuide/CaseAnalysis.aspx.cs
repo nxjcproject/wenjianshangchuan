@@ -18,10 +18,22 @@ namespace ExperienceInformation.Web.UI_OperationGuide
             base.InitComponts();
             if (!IsPostBack)
             {
-
+#if DEBUG
+                List<string> m_DataValidIdItems = new List<string>() { "zc_nxjc_qtx_efc", "zc_nxjc_byc_byf" };
+                AddDataValidIdGroup("ProductionOrganization", m_DataValidIdItems);
+                mPageOpPermission = "0000";
+#endif
             }
         }
-        
+        /// <summary>
+        /// 增删改查权限控制
+        /// </summary>
+        /// <returns></returns>
+        [WebMethod]
+        public static char[] AuthorityControl()
+        {
+            return mPageOpPermission.ToArray();
+        }
         [WebMethod]
         public static string GetCaseAnalysisType()
         {
@@ -54,46 +66,67 @@ namespace ExperienceInformation.Web.UI_OperationGuide
         public static string AddCaseAnalysis(string myCaseAnalysisName, string myKeyword, string myCaseAnalysisType, string myCaseAnalysisLevel,
                    string myCaseAnalysisNature, string myCaseAnalysisText, string myCaseAnalysisParticipants, string myCaseAnalysisTime)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[1] == '1')
             {
-                int m_CaseAnalysisText = ExperienceInformation.Service.CaseAnalysis.CaseAnalysis.AddCaseAnalysis(myCaseAnalysisName, myKeyword, myCaseAnalysisType, myCaseAnalysisLevel,
-                   myCaseAnalysisNature, myCaseAnalysisText, myCaseAnalysisParticipants, myCaseAnalysisTime, mUserId);
-                int m_Result = m_CaseAnalysisText > 0 ? 1 : m_CaseAnalysisText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_CaseAnalysisText = ExperienceInformation.Service.CaseAnalysis.CaseAnalysis.AddCaseAnalysis(myCaseAnalysisName, myKeyword, myCaseAnalysisType, myCaseAnalysisLevel,
+                       myCaseAnalysisNature, myCaseAnalysisText, myCaseAnalysisParticipants, myCaseAnalysisTime, mUserId);
+                    int m_Result = m_CaseAnalysisText > 0 ? 1 : m_CaseAnalysisText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有增加权限！";
             }
         }
         [WebMethod]
         public static string ModifyCaseAnalysis(string myCaseAnalysisId, string myCaseAnalysisName, string myKeyword, string myCaseAnalysisType, string myCaseAnalysisLevel,
                    string myCaseAnalysisNature, string myCaseAnalysisText, string myCaseAnalysisParticipants, string myCaseAnalysisTime)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[2] == '1')
             {
-                int m_CaseAnalysisText = ExperienceInformation.Service.CaseAnalysis.CaseAnalysis.ModifyCaseAnalysisById(myCaseAnalysisId, myCaseAnalysisName, myKeyword, myCaseAnalysisType, myCaseAnalysisLevel,
-                   myCaseAnalysisNature, myCaseAnalysisText, myCaseAnalysisParticipants, myCaseAnalysisTime, mUserId);
-                int m_Result = m_CaseAnalysisText > 0 ? 1 : m_CaseAnalysisText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_CaseAnalysisText = ExperienceInformation.Service.CaseAnalysis.CaseAnalysis.ModifyCaseAnalysisById(myCaseAnalysisId, myCaseAnalysisName, myKeyword, myCaseAnalysisType, myCaseAnalysisLevel,
+                       myCaseAnalysisNature, myCaseAnalysisText, myCaseAnalysisParticipants, myCaseAnalysisTime, mUserId);
+                    int m_Result = m_CaseAnalysisText > 0 ? 1 : m_CaseAnalysisText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有修改权限！";
             }
         }
         [WebMethod]
         public static string DeleteCaseAnalysisById(string myCaseAnalysisId)
         {
-            if (mUserId != "")
+            if (mPageOpPermission.ToArray()[3] == '1')
             {
-                int m_CaseAnalysisText = ExperienceInformation.Service.CaseAnalysis.CaseAnalysis.DeleteCaseAnalysisById(myCaseAnalysisId);
-                int m_Result = m_CaseAnalysisText > 0 ? 1 : m_CaseAnalysisText;
-                return m_Result.ToString();
+                if (mUserId != "")
+                {
+                    int m_CaseAnalysisText = ExperienceInformation.Service.CaseAnalysis.CaseAnalysis.DeleteCaseAnalysisById(myCaseAnalysisId);
+                    int m_Result = m_CaseAnalysisText > 0 ? 1 : m_CaseAnalysisText;
+                    return m_Result.ToString();
+                }
+                else
+                {
+                    return "非法的用户操作!";
+                }
             }
             else
             {
-                return "非法的用户操作!";
+                return "该用户没有删除权限！";
             }
         }
     }
