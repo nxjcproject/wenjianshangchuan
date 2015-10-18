@@ -115,6 +115,7 @@ namespace WebUserControls.Service.OrganizationSelector
                     from system_Organization A 
 					where A.Type is not null 
 					and A.Type <> '' 
+                    and A.Type in ('熟料','水泥磨','余热发电')
                     and A.Enabled = 1 
                     {0}
                     order by A.Type";
